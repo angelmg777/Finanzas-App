@@ -6,6 +6,7 @@ import type { Account } from '../../types'
 import Modal from '../../components/ui/Modal'
 import Button from '../../components/ui/Button'
 import AccountForm from '../../components/acconts/AccountForm'
+import toast from 'react-hot-toast'
 
 const typeConfig: Record<string, { label: string; icon: string }> = {
   DEBIT:  { label: 'Débito',   icon: '🏦' },
@@ -99,8 +100,28 @@ export default function AccountsPage() {
   const { mutate: deleteAccount } = useDeleteAccount()
 
   const handleDelete = (id: string) => {
-    if (confirm('¿Archivar esta cuenta?')) deleteAccount(id)
-  }
+  toast((t) => (
+    <div className="flex flex-col gap-3">
+      <p style={{ fontFamily: 'DM Mono, monospace', fontSize: 13 }}>
+        ¿Archivar esta cuenta?
+      </p>
+      <div className="flex gap-2">
+        <button
+          onClick={() => { deleteAccount(id); toast.dismiss(t.id) }}
+          className="px-3 py-1.5 rounded-lg text-xs font-bold"
+          style={{ background: 'rgba(255,68,102,0.2)', color: '#ff4466' }}>
+          Archivar
+        </button>
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          className="px-3 py-1.5 rounded-lg text-xs"
+          style={{ background: 'rgba(0,255,200,0.1)', color: '#00ffc8' }}>
+          Cancelar
+        </button>
+      </div>
+    </div>
+  ), { duration: 5000 })
+}
 
   return (
     <div className="p-6 max-w-6xl mx-auto">

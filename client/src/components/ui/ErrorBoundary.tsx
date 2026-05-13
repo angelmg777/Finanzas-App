@@ -1,7 +1,4 @@
-import { Component} from 'react'
-import { ErrorInfo} from 'react'
-import { ReactNode } from 'react'
-
+import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface Props { children: ReactNode }
 interface State { hasError: boolean; error?: Error }

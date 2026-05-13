@@ -7,6 +7,7 @@ import Modal from '../../components/ui/Modal'
 import Button from '../../components/ui/Button'
 import Select from '../../components/ui/Select'
 import TransactionForm from '../../components/transactions/TransactionForm'
+import toast from 'react-hot-toast'
 
 const typeConfig: Record<string, { label: string; icon: string; color: string }> = {
   INCOME:   { label: 'Ingreso',       icon: '↓', color: 'var(--success)' },
@@ -37,10 +38,28 @@ export default function TransactionsPage() {
   ]
 
   const handleDelete = (id: string) => {
-    if (confirm('¿Eliminar esta transacción? Se revertirá el balance.')) {
-      deleteTransaction(id)
-    }
-  }
+  toast((t) => (
+    <div className="flex flex-col gap-3">
+      <p style={{ fontFamily: 'DM Mono, monospace', fontSize: 13 }}>
+        ¿Eliminar movimiento? Se revertirá el balance.
+      </p>
+      <div className="flex gap-2">
+        <button
+          onClick={() => { deleteTransaction(id); toast.dismiss(t.id) }}
+          className="px-3 py-1.5 rounded-lg text-xs font-bold"
+          style={{ background: 'rgba(255,68,102,0.2)', color: '#ff4466' }}>
+          Eliminar
+        </button>
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          className="px-3 py-1.5 rounded-lg text-xs"
+          style={{ background: 'rgba(0,255,200,0.1)', color: '#00ffc8' }}>
+          Cancelar
+        </button>
+      </div>
+    </div>
+  ), { duration: 5000 })
+}
 
   const totalPages = Math.ceil((data?.total ?? 0) / LIMIT)
   const currentPage = Math.floor(offset / LIMIT) + 1
