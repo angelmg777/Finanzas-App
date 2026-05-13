@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #020809;
+  --bg-secondary: #040f11;
+  --bg-card: rgba(6, 25, 28, 0.8);
+  --border: rgba(0, 255, 200, 0.1);
+  --border-hover: rgba(0, 255, 200, 0.3);
+  --accent: #00ffc8;
+  --accent-dim: rgba(0, 255, 200, 0.15);
+  --accent-glow: 0 0 20px rgba(0, 255, 200, 0.3);
+  --text-primary: #e8f5f3;
+  --text-secondary: #5a8a82;
+  --danger: #ff4466;
+  --warning: #ffaa00;
+  --success: #00ffc8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 2px; }
+
+/* Glow effect para inputs focused */
+.input-glow:focus {
+  box-shadow: 0 0 0 1px var(--accent), var(--accent-glow);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(0, 255, 200, 0.1); }
+  50%       { border-color: rgba(0, 255, 200, 0.4); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+}
