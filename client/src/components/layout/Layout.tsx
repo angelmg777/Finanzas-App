@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/auth.store'
+import { useQueryClient } from '@tanstack/react-query'
 
 const navItems = [
   { path: '/',            label: 'Dashboard',     icon: '▦' },
@@ -12,8 +13,15 @@ export default function Layout() {
   const [collapsed, setCollapsed] = useState(false)
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
+    const queryClient = useQueryClient() // <- agrega esto
 
-  const handleLogout = () => { logout(); navigate('/login') }
+
+  const handleLogout = () => { 
+    queryClient.clear()
+    logout(); 
+    navigate('/login') 
+    
+  }
 
   return (
     <div className="flex min-h-screen" style={{ background: 'var(--bg-primary)' }}>
