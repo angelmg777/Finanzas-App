@@ -1,7 +1,8 @@
-import bcrypt from 'bcryptjs'
+ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { prisma } from '../config/database'
 import { AuthPayload } from '../types'
+import { seedDefaultCategories } from './category.service' // <- agrega este import
 
 interface RegisterInput {
   email: string
@@ -42,6 +43,8 @@ export const registerUser = async (input: RegisterInput): Promise<AuthResult> =>
   const user = await prisma.user.create({
     data: { email, name, password: hashedPassword },
   })
+
+  await seedDefaultCategories(user.id) // <- agrega esta línea
 
   const token = generateToken({ userId: user.id, email: user.email })
 
