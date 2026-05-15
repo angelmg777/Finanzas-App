@@ -1,5 +1,8 @@
 import { prisma } from '../config/database'
 import { TransactionType } from '../generated/prisma'
+import { PrismaClient } from '../generated/prisma'
+
+
 
 interface CreateTransactionInput {
   type: TransactionType
@@ -21,7 +24,7 @@ interface GetTransactionsFilter {
   offset?: number
 }
 
-type PrismaTx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
+type PrismaTx = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>
 
 const updateBalance = async (
   tx: PrismaTx,
@@ -110,7 +113,7 @@ export const createTransaction = async (userId: string, input: CreateTransaction
     if (!dest) throw new Error('Cuenta destino no encontrada')
   }
 
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: PrismaTx) => {
     const transaction = await tx.transaction.create({
       data: {
         type,
@@ -156,7 +159,7 @@ export const deleteTransaction = async (id: string, userId: string) => {
 
   if (!transaction) throw new Error('Transacción no encontrada')
 
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: PrismaTx) => {
     if (transaction.type === 'INCOME') {
       await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'subtract')
     } else if (transaction.type === 'EXPENSE') {
