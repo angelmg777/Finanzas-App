@@ -4,6 +4,7 @@ import { getAccountsApi, getAccountSummaryApi, createAccountApi, deleteAccountAp
 import { getApiError } from '../lib/utils'
 import type { AccountType } from '../types'
 
+
 export const useAccounts = () =>
   useQuery({ queryKey: ['accounts'], queryFn: getAccountsApi })
 
