@@ -11,16 +11,22 @@ import { applySecurityMiddlewares } from './middlewares/security'
 import { notFound, errorHandler } from './middlewares/errorHandler'
 import { AuthRequest } from './types'
 
+
+
 dotenv.config()
 
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Server on port ${PORT}`));
 
 // Seguridad
 applySecurityMiddlewares(app)
 
 // Middlewares base
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json({ limit: '10kb' })) // límite de payload
 
 // Rutas públicas
