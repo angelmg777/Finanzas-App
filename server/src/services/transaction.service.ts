@@ -1,6 +1,6 @@
 import { prisma } from '../config/database'
-import { TransactionType } from '../generated/prisma'
-import { PrismaClient } from '../generated/prisma'
+import { TransactionType } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 
 

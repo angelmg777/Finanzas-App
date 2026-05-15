@@ -9,7 +9,7 @@ import {
   deleteAccount,
   getAccountSummary,
 } from '../services/account.service'
-import { AccountType } from '../generated/prisma'
+import { AccountType } from '@prisma/client'
 
 const VALID_TYPES: AccountType[] = ['DEBIT', 'CREDIT', 'CASH']
 

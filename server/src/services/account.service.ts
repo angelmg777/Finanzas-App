@@ -1,5 +1,5 @@
 import { prisma } from '../config/database'
-import { AccountType, Account } from '../generated/prisma'
+import { AccountType, Account } from '@prisma/client'
 
 interface CreateAccountInput {
   name: string

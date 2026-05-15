@@ -2,7 +2,7 @@ import { Response } from 'express'
 import { AuthRequest } from '../types'
 import { sendSuccess, sendError } from '../utils/response'
 import { getTransactions, createTransaction, deleteTransaction } from '../services/transaction.service'
-import { TransactionType } from '../generated/prisma'
+import { TransactionType } from '@prisma/client'
 
 const VALID_TYPES: TransactionType[] = ['INCOME', 'EXPENSE', 'TRANSFER']
 
