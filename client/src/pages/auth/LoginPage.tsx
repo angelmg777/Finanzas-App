@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,7 +8,7 @@ import { useAuthStore } from '../../store/auth.store'
 import { getApiError } from '../../lib/utils'
 import Input from '../../components/ui/Input'
 import Button from '../../components/ui/Button'
-import Alert from '../../components/ui/Alert'
+import toast from 'react-hot-toast' // <- agrega esto
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -21,7 +20,6 @@ type LoginForm = z.infer<typeof loginSchema>
 export default function LoginPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((s) => s.setAuth)
-  const [apiError, setApiError] = useState('')
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -30,7 +28,7 @@ export default function LoginPage() {
   const { mutate, isPending } = useMutation({
     mutationFn: ({ email, password }: LoginForm) => loginApi(email, password),
     onSuccess: ({ user, token }) => { setAuth(user, token); navigate('/') },
-    onError: (error) => setApiError(getApiError(error)),
+    onError: (error) => toast.error(getApiError(error)), // <- usa toast
   })
 
   return (
@@ -43,7 +41,6 @@ export default function LoginPage() {
           style={{ background: 'radial-gradient(circle, rgba(0,255,200,0.06) 0%, transparent 70%)' }} />
         <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full"
           style={{ background: 'radial-gradient(circle, rgba(0,200,160,0.04) 0%, transparent 70%)' }} />
-        {/* Grid lines */}
         <div className="absolute inset-0 opacity-[0.03]"
           style={{ backgroundImage: 'linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)',
             backgroundSize: '60px 60px' }} />
@@ -69,9 +66,8 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="card p-8">
-          <form onSubmit={handleSubmit((data) => { setApiError(''); mutate(data) })}
+          <form onSubmit={handleSubmit((data) => mutate(data))}
             className="flex flex-col gap-5">
-            {apiError && <Alert type="error" message={apiError} />}
 
             <Input label="Email" type="email" placeholder="usuario@dominio.com"
               error={errors.email?.message} {...register('email')} />
