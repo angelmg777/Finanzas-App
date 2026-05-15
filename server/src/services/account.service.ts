@@ -1,5 +1,5 @@
 import { prisma } from '../config/database'
-import { AccountType } from '../generated/prisma'
+import { AccountType, Account } from '../generated/prisma'
 
 interface CreateAccountInput {
   name: string
@@ -66,7 +66,6 @@ export const updateAccount = async (
 export const deleteAccount = async (id: string, userId: string) => {
   await getAccountById(id, userId)
 
-  // Soft delete — archivamos en lugar de borrar
   return prisma.account.update({
     where: { id },
     data: { isArchived: true },
@@ -74,7 +73,7 @@ export const deleteAccount = async (id: string, userId: string) => {
 }
 
 export const getAccountSummary = async (userId: string) => {
-  const accounts = await prisma.account.findMany({
+  const accounts: Account[] = await prisma.account.findMany({
     where: { userId, isArchived: false },
   })
 
