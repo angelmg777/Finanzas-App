@@ -68,8 +68,16 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="card p-8">
-          <form onSubmit={handleSubmit((data) => { setApiError(''); mutate(data) })}
-            className="flex flex-col gap-5">
+          <form 
+            onSubmit={(e) => {
+                e.preventDefault()
+                handleSubmit((data) => { 
+                  setApiError('')
+                  mutate(data) 
+                })(e)
+              }}
+            className="flex flex-col gap-5"
+            >
             {apiError && <Alert type="error" message={apiError} />}
 
             <Input label="Email" type="email" placeholder="usuario@dominio.com"
