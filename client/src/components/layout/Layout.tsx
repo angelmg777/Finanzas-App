@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/auth.store'
 import { useQueryClient } from '@tanstack/react-query'
 
 const navItems = [
-  { path: '/',            label: 'Dashboard',     icon: '▦' },
+  { path: '/',            label: 'Resumen',     icon: '▦' },
   { path: '/accounts',   label: 'Cuentas',        icon: '◈' },
   { path: '/transactions', label: 'Movimientos',  icon: '⇄' },
 ]

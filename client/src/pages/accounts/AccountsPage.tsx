@@ -144,26 +144,26 @@ export default function AccountsPage() {
         </div>
 
       {/* Resumen rápido */}
-      {summary && (
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {[
-            { label: 'Activos totales', value: formatCurrency(summary.totalAssets), color: 'var(--accent)' },
-            { label: 'Deuda total',     value: formatCurrency(summary.totalDebt),   color: 'var(--danger)' },
-            { label: 'Patrimonio neto', value: formatCurrency(summary.netWorth),    color: '#00d4aa' },
-          ].map((item) => (
-            <div key={item.label} className="card p-4 animate-fade-up">
-              <p className="text-xs uppercase tracking-widest mb-2"
-                style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
-                {item.label}
-              </p>
-              <p className="text-xl font-extrabold" style={{ color: item.color,
-                fontFamily: 'DM Mono, monospace' }}>
-                {item.value}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+        {summary && (
+          <div className="grid grid-cols-1 gap-3 mb-6">
+            {[
+              { label: 'Activos totales', value: formatCurrency(summary.totalAssets), color: 'var(--accent)' },
+              { label: 'Deuda total',     value: formatCurrency(summary.totalDebt),   color: 'var(--danger)' },
+              { label: 'Patrimonio neto', value: formatCurrency(summary.netWorth),    color: '#00d4aa' },
+            ].map((item) => (
+              <div key={item.label} className="card p-4 flex items-center justify-between animate-fade-up">
+                <p className="text-xs uppercase tracking-widest"
+                  style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
+                  {item.label}
+                </p>
+                <p className="text-lg font-extrabold"
+                  style={{ color: item.color, fontFamily: 'DM Mono, monospace' }}>
+                  {item.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
 
       {/* Grid de cuentas */}
       {isLoading ? (
