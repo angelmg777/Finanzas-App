@@ -68,17 +68,20 @@ export default function TransactionsPage() {
     <div className="p-6 max-w-6xl mx-auto">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 animate-fade-up">
-        <div>
+      <div className="flex items-center justify-between mb-6 animate-fade-up gap-3">
+        <div className="min-w-0">
           <p className="text-xs uppercase tracking-widest mb-1"
             style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
             // historial de movimientos
           </p>
-          <h1 className="text-3xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
+          <h1 className="text-2xl md:text-3xl font-extrabold truncate"
+            style={{ color: 'var(--text-primary)' }}>
             Movimientos<span style={{ color: 'var(--accent)' }}>.</span>
           </h1>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>+ Nuevo movimiento</Button>
+        <Button onClick={() => setIsModalOpen(true)} className="flex-shrink-0">
+          + Nuevo
+        </Button>
       </div>
 
       {/* Filtros */}

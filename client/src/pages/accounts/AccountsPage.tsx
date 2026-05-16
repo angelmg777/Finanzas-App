@@ -127,20 +127,21 @@ export default function AccountsPage() {
   <div className="p-4 md:p-6 max-w-6xl mx-auto">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 animate-fade-up">
-        <div>
-          <p className="text-xs uppercase tracking-widest mb-1"
-            style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
-            // gestión de cuentas
-          </p>
-          <h1 className="text-3xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
-            Cuentas<span style={{ color: 'var(--accent)' }}>.</span>
-          </h1>
+      <div className="flex items-center justify-between mb-6 animate-fade-up gap-3">
+          <div className="min-w-0">
+            <p className="text-xs uppercase tracking-widest mb-1"
+              style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
+              // gestión de cuentas
+            </p>
+            <h1 className="text-2xl md:text-3xl font-extrabold truncate"
+              style={{ color: 'var(--text-primary)' }}>
+              Cuentas<span style={{ color: 'var(--accent)' }}>.</span>
+            </h1>
+          </div>
+          <Button onClick={() => setIsModalOpen(true)} className="flex-shrink-0">
+            + Nueva
+          </Button>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          + Nueva cuenta
-        </Button>
-      </div>
 
       {/* Resumen rápido */}
       {summary && (
