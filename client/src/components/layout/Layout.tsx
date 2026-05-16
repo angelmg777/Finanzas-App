@@ -26,9 +26,9 @@ export default function Layout() {
   return (
     <div className="flex min-h-screen" style={{ background: 'var(--bg-primary)' }}>
 
-      {/* Sidebar */}
+      {/* Sidebar — solo desktop */}
       <aside
-        className="flex flex-col relative transition-all duration-300"
+        className="hidden md:flex flex-col relative transition-all duration-300 flex-shrink-0"
         style={{
           width: collapsed ? '64px' : '220px',
           background: 'var(--bg-secondary)',
@@ -110,9 +110,53 @@ export default function Layout() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pb-20 md:pb-0">
+        {/* Mobile header */}
+        <div className="md:hidden flex items-center justify-between px-4 py-4 sticky top-0 z-40"
+          style={{ background: 'var(--bg-primary)', borderBottom: '1px solid var(--border)' }}>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: 'var(--accent-dim)', color: 'var(--accent)',
+                border: '1px solid var(--border-hover)' }}>
+              ◈
+            </div>
+            <span className="font-extrabold text-sm tracking-widest"
+              style={{ color: 'var(--text-primary)' }}>
+              FINANZAS<span style={{ color: 'var(--accent)' }}>.</span>
+            </span>
+          </div>
+          <button onClick={handleLogout}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+            style={{ color: 'var(--danger)', background: 'rgba(255,68,102,0.08)' }}>
+            ⏻
+          </button>
+        </div>
+
         <Outlet />
       </main>
+
+      {/* Bottom Navigation — solo mobile */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-3"
+        style={{
+          background: 'rgba(4,15,17,0.95)',
+          borderTop: '1px solid var(--border)',
+          backdropFilter: 'blur(12px)',
+        }}>
+        {navItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            end={item.path === '/'}
+            className="flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-all"
+            style={({ isActive }) => ({
+              color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+            })}
+          >
+            <span className="text-xl">{item.icon}</span>
+            <span className="text-xs font-medium">{item.label}</span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   )
 }

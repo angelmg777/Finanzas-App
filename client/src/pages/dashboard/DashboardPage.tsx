@@ -69,13 +69,13 @@ export default function DashboardPage() {
 
       {/* Stats principales */}
       {loadingSummary ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="card p-5 h-28 animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <StatCard label="Patrimonio neto"    value={formatCurrency(summary?.netWorth ?? 0)}       icon="◈" accent="var(--accent)" />
           <StatCard label="Total activos"      value={formatCurrency(summary?.totalAssets ?? 0)}    icon="▲" accent="#00d4aa" />
           <StatCard label="Deuda total"        value={formatCurrency(summary?.totalDebt ?? 0)}      icon="▼" accent="var(--danger)" />
@@ -85,7 +85,7 @@ export default function DashboardPage() {
 
       {/* Stats del período */}
       {statsData && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <StatCard label="Ingresos totales"  value={formatCurrency(statsData.totalIncome)}  icon="↓" accent="var(--success)" />
           <StatCard label="Gastos totales"    value={formatCurrency(statsData.totalExpense)} icon="↑" accent="var(--danger)" />
           <StatCard label="Balance período"   value={formatCurrency(statsData.balance)}      icon="=" accent="var(--accent)" />
@@ -113,7 +113,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Gráficas fila 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 gap-4 mb-4">
 
         {/* Ingresos vs Gastos */}
         <div className="card p-5 animate-fade-up">
@@ -188,8 +188,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Gráficas fila 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-
+      <div className="grid grid-cols-1 gap-4 mb-4">
         {/* Evolución patrimonio */}
         <div className="card p-5 lg:col-span-2 animate-fade-up">
           <h2 className="text-xs uppercase tracking-widest mb-5"

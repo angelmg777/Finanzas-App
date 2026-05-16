@@ -126,139 +126,195 @@ export default function TransactionsPage() {
       </div>
 
       {/* Lista */}
-      <div className="card overflow-hidden animate-fade-up">
-        {isLoading ? (
-          <div className="flex flex-col gap-0">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-16 animate-pulse m-4 rounded-xl"
-                style={{ background: 'rgba(0,255,200,0.03)' }} />
-            ))}
-          </div>
-        ) : data?.transactions.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-4xl mb-4">◎</p>
-            <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)',
-              fontFamily: 'DM Mono, monospace' }}>
-              // sin movimientos
-            </p>
-            <Button onClick={() => setIsModalOpen(true)}>Registrar primero</Button>
-          </div>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                {['Tipo', 'Descripción', 'Cuenta', 'Categoría', 'Fecha', 'Monto', ''].map((h) => (
-                  <th key={h} className="text-left px-5 py-3 text-xs uppercase tracking-widest"
-                    style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data?.transactions.map((tx) => {
-                const meta = typeConfig[tx.type]
-                return (
-                  <tr key={tx.id}
-                    className="transition-all"
-                    style={{ borderBottom: '1px solid var(--border)' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,255,200,0.02)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                    <td className="px-5 py-4">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
-                        style={{ background: `${meta.color}15`, color: meta.color }}>
-                        {meta.icon}
-                      </div>
-                    </td>
-                    <td className="px-5 py-4">
-                      <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                        {tx.description || meta.label}
-                      </p>
-                      {tx.destinationAccount && (
-                        <p className="text-xs" style={{ color: 'var(--text-secondary)',
-                          fontFamily: 'DM Mono, monospace' }}>
-                          → {tx.destinationAccount.name}
-                        </p>
-                      )}
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ background: tx.account.color }} />
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                          {tx.account.name}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4">
-                      {tx.category ? (
-                        <span className="text-xs px-2 py-1 rounded-lg"
-                          style={{ background: `${tx.category.color}20`,
-                            color: tx.category.color, fontFamily: 'DM Mono, monospace' }}>
-                          {tx.category.icon} {tx.category.name}
-                        </span>
-                      ) : (
-                        <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>—</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className="text-xs" style={{ color: 'var(--text-secondary)',
+<div className="card overflow-hidden animate-fade-up">
+  {isLoading ? (
+    <div className="flex flex-col gap-0">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="h-16 animate-pulse m-4 rounded-xl"
+          style={{ background: 'rgba(0,255,200,0.03)' }} />
+      ))}
+    </div>
+  ) : data?.transactions.length === 0 ? (
+    <div className="text-center py-16">
+      <p className="text-4xl mb-4">◎</p>
+      <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)',
+        fontFamily: 'DM Mono, monospace' }}>
+        // sin movimientos
+      </p>
+      <Button onClick={() => setIsModalOpen(true)}>Registrar primero</Button>
+    </div>
+  ) : (
+    <>
+      {/* Tabla — solo desktop */}
+      <div className="hidden md:block">
+        <table className="w-full">
+          <thead>
+            <tr style={{ borderBottom: '1px solid var(--border)' }}>
+              {['Tipo', 'Descripción', 'Cuenta', 'Categoría', 'Fecha', 'Monto', ''].map((h) => (
+                <th key={h} className="text-left px-5 py-3 text-xs uppercase tracking-widest"
+                  style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data?.transactions.map((tx) => {
+              const meta = typeConfig[tx.type]
+              return (
+                <tr key={tx.id}
+                  className="transition-all"
+                  style={{ borderBottom: '1px solid var(--border)' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,255,200,0.02)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                  <td className="px-5 py-4">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+                      style={{ background: `${meta.color}15`, color: meta.color }}>
+                      {meta.icon}
+                    </div>
+                  </td>
+                  <td className="px-5 py-4">
+                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                      {tx.description || meta.label}
+                    </p>
+                    {tx.destinationAccount && (
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)',
                         fontFamily: 'DM Mono, monospace' }}>
-                        {formatDate(tx.date)}
+                        → {tx.destinationAccount.name}
+                      </p>
+                    )}
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ background: tx.account.color }} />
+                      <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                        {tx.account.name}
                       </span>
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className="text-sm font-bold"
-                        style={{ color: meta.color, fontFamily: 'DM Mono, monospace' }}>
-                        {tx.type === 'INCOME' ? '+' : tx.type === 'EXPENSE' ? '-' : ''}
-                        {formatCurrency(tx.amount)}
+                    </div>
+                  </td>
+                  <td className="px-5 py-4">
+                    {tx.category ? (
+                      <span className="text-xs px-2 py-1 rounded-lg"
+                        style={{ background: `${tx.category.color}20`,
+                          color: tx.category.color, fontFamily: 'DM Mono, monospace' }}>
+                        {tx.category.icon} {tx.category.name}
                       </span>
-                    </td>
-                    <td className="px-5 py-4">
-                      <button onClick={() => handleDelete(tx.id)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-xs transition-all"
-                        style={{ color: 'var(--text-secondary)' }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.background = 'rgba(255,68,102,0.1)'
-                          e.currentTarget.style.color = 'var(--danger)'
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.background = 'transparent'
-                          e.currentTarget.style.color = 'var(--text-secondary)'
-                        }}>
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        )}
-
-        {/* Paginación */}
-        {(data?.total ?? 0) > LIMIT && (
-          <div className="flex items-center justify-between px-5 py-4"
-            style={{ borderTop: '1px solid var(--border)' }}>
-            <p className="text-xs" style={{ color: 'var(--text-secondary)',
-              fontFamily: 'DM Mono, monospace' }}>
-              Página {currentPage} de {totalPages}
-            </p>
-            <div className="flex gap-2">
-              <Button variant="secondary" size="sm"
-                disabled={offset === 0}
-                onClick={() => setOffset(Math.max(0, offset - LIMIT))}>
-                ← Anterior
-              </Button>
-              <Button variant="secondary" size="sm"
-                disabled={offset + LIMIT >= (data?.total ?? 0)}
-                onClick={() => setOffset(offset + LIMIT)}>
-                Siguiente →
-              </Button>
-            </div>
-          </div>
-        )}
+                    ) : (
+                      <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-4">
+                    <span className="text-xs" style={{ color: 'var(--text-secondary)',
+                      fontFamily: 'DM Mono, monospace' }}>
+                      {formatDate(tx.date)}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    <span className="text-sm font-bold"
+                      style={{ color: meta.color, fontFamily: 'DM Mono, monospace' }}>
+                      {tx.type === 'INCOME' ? '+' : tx.type === 'EXPENSE' ? '-' : ''}
+                      {formatCurrency(tx.amount)}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    <button onClick={() => handleDelete(tx.id)}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center text-xs transition-all"
+                      style={{ color: 'var(--text-secondary)' }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = 'rgba(255,68,102,0.1)'
+                        e.currentTarget.style.color = 'var(--danger)'
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = 'transparent'
+                        e.currentTarget.style.color = 'var(--text-secondary)'
+                      }}>
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
+
+      {/* Cards — solo mobile */}
+      <div className="md:hidden flex flex-col divide-y"
+        style={{ borderColor: 'var(--border)' }}>
+        {data?.transactions.map((tx) => {
+          const meta = typeConfig[tx.type]
+          return (
+            <div key={tx.id} className="flex items-center justify-between p-4 gap-3">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
+                  style={{ background: `${meta.color}15`, color: meta.color }}>
+                  {meta.icon}
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-sm font-semibold truncate"
+                    style={{ color: 'var(--text-primary)' }}>
+                    {tx.description || meta.label}
+                  </p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                      style={{ background: tx.account.color }} />
+                    <p className="text-xs truncate"
+                      style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
+                      {tx.account.name} · {formatDate(tx.date)}
+                    </p>
+                  </div>
+                  {tx.category && (
+                    <span className="inline-block mt-1 text-xs px-1.5 py-0.5 rounded-md"
+                      style={{ background: `${tx.category.color}20`, color: tx.category.color,
+                        fontFamily: 'DM Mono, monospace' }}>
+                      {tx.category.icon} {tx.category.name}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                <span className="text-sm font-bold"
+                  style={{ color: meta.color, fontFamily: 'DM Mono, monospace' }}>
+                  {tx.type === 'INCOME' ? '+' : tx.type === 'EXPENSE' ? '-' : ''}
+                  {formatCurrency(tx.amount)}
+                </span>
+                <button onClick={() => handleDelete(tx.id)}
+                  className="w-6 h-6 rounded-md flex items-center justify-center text-xs"
+                  style={{ background: 'rgba(255,68,102,0.1)', color: 'var(--danger)' }}>
+                  ✕
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </>
+  )}
+
+  {/* Paginación */}
+  {(data?.total ?? 0) > LIMIT && (
+    <div className="flex items-center justify-between px-4 py-4"
+      style={{ borderTop: '1px solid var(--border)' }}>
+      <p className="text-xs" style={{ color: 'var(--text-secondary)',
+        fontFamily: 'DM Mono, monospace' }}>
+        Página {currentPage} de {totalPages}
+      </p>
+      <div className="flex gap-2">
+        <Button variant="secondary" size="sm"
+          disabled={offset === 0}
+          onClick={() => setOffset(Math.max(0, offset - LIMIT))}>
+          ←
+        </Button>
+        <Button variant="secondary" size="sm"
+          disabled={offset + LIMIT >= (data?.total ?? 0)}
+          onClick={() => setOffset(offset + LIMIT)}>
+          →
+        </Button>
+      </div>
+    </div>
+  )}
+</div>
 
       {/* Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="nuevo movimiento">
