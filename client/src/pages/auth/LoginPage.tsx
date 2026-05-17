@@ -27,11 +27,18 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   })
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: ({ email, password }: LoginForm) => loginApi(email, password),
-    onSuccess: ({ user, token }) => { setAuth(user, token); navigate('/') },
-    onError: (error) => setApiError(getApiError(error)),
-  })
+ const { mutate, isPending } = useMutation({
+  mutationFn: ({ email, password }: LoginForm) => loginApi(email, password),
+  onSuccess: ({ user, token }) => { setAuth(user, token); navigate('/') },
+  onError: (error) => {
+    const err = getApiError(error)
+    if (err.includes('verificar tu email')) {
+      setApiError('Debes verificar tu email antes de continuar. Revisa tu bandeja de entrada.')
+    } else {
+      setApiError(err)
+    }
+  },
+})
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
@@ -85,6 +92,14 @@ export default function LoginPage() {
 
             <Input label="Contraseña" type="password" placeholder="••••••••"
               error={errors.password?.message} {...register('password')} />
+
+            <div className="flex justify-end">
+              <Link to="/forgot-password"
+                className="text-xs hover:underline"
+                style={{ color: 'var(--text-secondary)', fontFamily: 'DM Mono, monospace' }}>
+                ¿olvidaste tu contraseña?
+              </Link>
+            </div>
 
             <Button type="submit" size="lg" loading={isPending} className="mt-2 w-full">
               {isPending ? 'Autenticando...' : 'Iniciar sesión →'}

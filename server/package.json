@@ -5,10 +5,10 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "postinstall": "prisma generate",
-    "build": "tsc",
-    "start": "node dist/index.js"
-
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
+    "build": "prisma generate && tsc",
+    "start": "prisma migrate deploy && node dist/index.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
@@ -27,6 +27,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "prisma": "^7.8.0",
+    "resend": "^6.12.3",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   },

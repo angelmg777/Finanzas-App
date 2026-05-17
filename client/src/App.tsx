@@ -6,6 +6,9 @@ import DashboardPage from './pages/dashboard/DashboardPage'
 import AccountsPage from './pages/accounts/AccountsPage'
 import TransactionsPage from './pages/transactions/TransactionsPage'
 import Layout from './components/layout/Layout'
+import VerifyEmailPage from './pages/auth/VerifyEmailPage'
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
+import ResetPasswordPage from './pages/auth/RessetPassswordPage'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -26,6 +29,9 @@ export default function App() {
         <Route index element={<DashboardPage />} />
         <Route path="accounts" element={<AccountsPage />} />
         <Route path="transactions" element={<TransactionsPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+        <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
       </Route>
     </Routes>
   )
