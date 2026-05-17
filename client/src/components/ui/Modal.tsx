@@ -14,37 +14,45 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
     return () => document.removeEventListener('keydown', handler)
   }, [onClose])
 
-  // Bloquea scroll del body cuando el modal está abierto
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100%'
     } else {
       document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
     }
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+    }
   }, [isOpen])
 
   if (!isOpen) return null
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)' }}
+      className="fixed inset-0 z-[100] flex flex-col justify-end md:justify-center md:items-center md:p-4"
+      style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)' }}
       onClick={onClose}
     >
       <div
-        className="w-full md:max-w-md animate-fade-up flex flex-col"
+        className="w-full md:max-w-md flex flex-col"
         style={{
-          background: 'var(--bg-card)',
+          background: '#040f11',
           border: '1px solid var(--border)',
-          backdropFilter: 'blur(12px)',
           borderRadius: '20px 20px 0 0',
-          maxHeight: '92vh',
+          // En móvil ocupa hasta 85% de la pantalla y deja espacio para el bottom nav
+          maxHeight: 'calc(85vh - 70px)',
+          // En desktop centrado normal
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Handle bar — solo móvil */}
-        <div className="flex justify-center pt-3 pb-1 md:hidden">
+        {/* Handle bar móvil */}
+        <div className="flex justify-center pt-3 pb-1 md:hidden flex-shrink-0">
           <div className="w-10 h-1 rounded-full"
             style={{ background: 'var(--border-hover)' }} />
         </div>
@@ -66,10 +74,18 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
           </button>
         </div>
 
-        {/* Body — scrolleable */}
-        <div className="overflow-y-auto flex-1 px-6 py-5"
-          style={{ paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}>
+        {/* Body scrolleable */}
+        <div
+          className="overflow-y-auto flex-1"
+          style={{
+            padding: '20px 24px',
+            overscrollBehavior: 'contain',
+            WebkitOverflowScrolling: 'touch',
+          } as React.CSSProperties}
+        >
           {children}
+          {/* Espacio extra al final para que el botón no quede pegado */}
+          <div className="h-4" />
         </div>
       </div>
     </div>

@@ -136,7 +136,7 @@ export default function Layout() {
       </main>
 
       {/* Bottom Navigation — solo mobile */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-3"
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-90 flex items-center justify-around px-4 py-3"
         style={{
           background: 'rgba(4,15,17,0.95)',
           borderTop: '1px solid var(--border)',
