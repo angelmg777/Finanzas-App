@@ -102,7 +102,7 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" size="lg" loading={isPending} className="mt-2 w-full">
-              {isPending ? 'Autenticando...' : 'Iniciar sesión →'}
+              Iniciar sesión →
             </Button>
           </form>
         </div>
