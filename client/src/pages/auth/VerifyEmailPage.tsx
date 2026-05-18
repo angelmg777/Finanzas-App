@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import apiClient from '../../api/client'
+import { useAuthStore } from '../../store/auth.store'
 import type { ApiResponse } from '../../types'
 
 type Status = 'loading' | 'success' | 'error'
@@ -10,34 +11,37 @@ export default function VerifyEmailPage() {
   const [status, setStatus] = useState<Status>('loading')
   const [message, setMessage] = useState('')
   const calledRef = useRef(false)
+  const logout = useAuthStore((s) => s.logout)
 
- useEffect(() => {
-  if (calledRef.current) return
-  calledRef.current = true
+  useEffect(() => {
+    if (calledRef.current) return
+    calledRef.current = true
 
-  const token = searchParams.get('token')
+    // Cierra sesión para evitar redirects
+    logout()
 
-  if (!token) {
-    setTimeout(() => {
-      setStatus('error')
-      setMessage('Token no válido')
-    }, 0)
-    return
-  }
+    const token = searchParams.get('token')
+    if (!token) {
+      setTimeout(() => {
+        setStatus('error')
+        setMessage('Token no válido')
+      }, 0)
+      return
+    }
 
-  apiClient
-    .get<ApiResponse<{ message: string }>>(`/auth/verify-email?token=${token}`)
-    .then(() => setStatus('success'))
-    .catch((err) => {
-      setStatus('error')
-      setMessage(err.response?.data?.message ?? 'Token inválido o expirado')
-    })
-}, [searchParams])
+    apiClient
+      .get<ApiResponse<{ message: string }>>(`/auth/verify-email?token=${token}`)
+      .then(() => setStatus('success'))
+      .catch((err) => {
+        setStatus('error')
+        setMessage(err.response?.data?.message ?? 'Token inválido o expirado')
+      })
+  }, [searchParams, logout])
 
   const config = {
-    loading: { icon: '⟳', title: 'Verificando',        color: 'var(--accent)',   text: 'Espera un momento.' },
-    success: { icon: '✓',  title: '¡Email verificado!', color: 'var(--success)',  text: 'Tu cuenta está activa. Ya puedes iniciar sesión.' },
-    error:   { icon: '✕',  title: 'Error',              color: 'var(--danger)',   text: message || 'El link es inválido o ya expiró.' },
+    loading: { icon: '⟳', title: 'Verificando',        color: 'var(--accent)',  text: 'Espera un momento.' },
+    success: { icon: '✓',  title: '¡Email verificado!', color: 'var(--success)', text: 'Tu cuenta está activa. Ya puedes iniciar sesión.' },
+    error:   { icon: '✕',  title: 'Error',              color: 'var(--danger)',  text: message || 'El link es inválido o ya expiró.' },
   }[status]
 
   return (
