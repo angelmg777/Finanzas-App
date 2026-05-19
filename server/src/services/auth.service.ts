@@ -96,12 +96,12 @@ export const verifyEmail = async (token: string): Promise<{ message: string }> =
 export const forgotPassword = async (email: string): Promise<{ message: string }> => {
   const user = await prisma.user.findUnique({ where: { email } })
 
-  // Siempre respondemos lo mismo para no revelar si el email existe
   if (!user) return { message: 'Si el email existe, recibirás un enlace de recuperación.' }
 
   const resetToken = generateRandomToken()
-  const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000) // 15 minutos
+  const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000)
 
+  // Un solo update — Prisma maneja el unique constraint correctamente
   await prisma.user.update({
     where: { id: user.id },
     data: { resetToken, resetTokenExpiry },
@@ -113,22 +113,29 @@ export const forgotPassword = async (email: string): Promise<{ message: string }
 }
 
 export const resetPassword = async (token: string, newPassword: string): Promise<{ message: string }> => {
-  const user = await prisma.user.findUnique({ where: { resetToken: token } })
+  try {
+    const user = await prisma.user.findUnique({ where: { resetToken: token } })
 
-  if (!user || !user.resetTokenExpiry) throw new Error('Token inválido o expirado')
+    if (!user || !user.resetTokenExpiry) throw new Error('Token inválido o expirado')
+    if (user.resetTokenExpiry < new Date()) throw new Error('Token expirado. Solicita uno nuevo.')
 
-  if (user.resetTokenExpiry < new Date()) throw new Error('Token expirado. Solicita uno nuevo.')
+    const hashedPassword = await bcrypt.hash(newPassword, 12)
 
-  const hashedPassword = await bcrypt.hash(newPassword, 12)
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    })
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      password: hashedPassword,
-      resetToken: null,
-      resetTokenExpiry: null,
-    },
-  })
-
-  return { message: 'Contraseña actualizada exitosamente' }
+    return { message: 'Contraseña actualizada exitosamente' }
+  } catch (error) {
+    // Si el error es de Prisma por token no encontrado
+    if (error instanceof Error && error.message.includes('RecordNotFound')) {
+      throw new Error('Token inválido o expirado')
+    }
+    throw error
+  }
 }
