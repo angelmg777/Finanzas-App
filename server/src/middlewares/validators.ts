@@ -1,13 +1,19 @@
 import { body } from 'express-validator'
 
 export const registerValidator = [
-  body('email').isEmail().withMessage('Email inválido').normalizeEmail(),
+  body('email')
+    .isEmail()
+    .withMessage('Email inválido')
+    .normalizeEmail({ gmail_remove_dots: false }),
   body('name').trim().isLength({ min: 2 }).withMessage('Nombre mínimo 2 caracteres'),
   body('password').isLength({ min: 8 }).withMessage('Contraseña mínimo 8 caracteres'),
 ]
 
 export const loginValidator = [
-  body('email').isEmail().withMessage('Email inválido').normalizeEmail(),
+  body('email')
+    .isEmail()
+    .withMessage('Email inválido')
+    .normalizeEmail({ gmail_remove_dots: false }),
   body('password').notEmpty().withMessage('Contraseña requerida'),
 ]
 
