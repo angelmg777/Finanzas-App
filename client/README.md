@@ -1,73 +1,100 @@
-# React + TypeScript + Vite
+# 💰 Finanzas App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web fullstack de gestión financiera personal con autenticación completa,
+dashboard con gráficas interactivas y diseño responsive.
 
-Currently, two official plugins are available:
+## 🚀 Demo
+https://finanzas-app-eight-jade.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Funcionalidades
 
-## React Compiler
+- **Autenticación completa** — Registro con verificación de email, login con JWT
+  y recuperación de contraseña
+- **Gestión de cuentas** — Cuentas de débito, crédito y efectivo con saldo en
+  tiempo real
+- **Tarjetas de crédito** — Manejo de deuda, límite de crédito y crédito disponible
+- **Transacciones** — Registro de ingresos, gastos y transferencias con reversión
+  automática de balances
+- **Dashboard** — Estadísticas en tiempo real, gráficas de ingresos vs gastos,
+  gastos por categoría y evolución del patrimonio
+- **Filtros** — Por tipo de transacción, cuenta y período de tiempo
+- **Responsive** — Diseño optimizado para móvil con bottom navigation
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠 Stack Tecnológico
 
-## Expanding the ESLint configuration
+### Frontend
+- React 19 + TypeScript
+- Vite
+- TailwindCSS
+- Zustand (estado global)
+- TanStack Query (server state)
+- React Hook Form + Zod (formularios y validación)
+- Recharts (gráficas)
+- React Router DOM
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Backend
+- Node.js + Express
+- TypeScript
+- Prisma ORM
+- PostgreSQL (Neon)
+- JWT (autenticación)
+- Bcrypt (encriptación)
+- Brevo (envío de emails)
+- Helmet + Rate Limiting (seguridad)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### DevOps
+- Frontend: Vercel
+- Backend: Railway
+- Base de datos: Neon (PostgreSQL serverless)
+- Control de versiones: GitHub
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🏗 Arquitectura
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+\`\`\`
+finanzas-app/
+├── client/          # React + Vite
+│   ├── src/
+│   │   ├── api/         # Servicios HTTP
+│   │   ├── components/  # Componentes reutilizables
+│   │   ├── hooks/       # Custom hooks
+│   │   ├── pages/       # Pantallas
+│   │   ├── store/       # Zustand stores
+│   │   └── types/       # Tipos TypeScript
+└── server/          # Node.js + Express
+    ├── src/
+    │   ├── controllers/ # Manejo de requests
+    │   ├── services/    # Lógica de negocio
+    │   ├── middlewares/ # Auth, validación, seguridad
+    │   ├── routes/      # Definición de endpoints
+    │   └── types/       # Tipos TypeScript
+    └── prisma/          # Schema y migraciones
+\`\`\`
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔐 Seguridad
+- JWT con expiración configurable
+- Bcrypt con salt rounds 12
+- Helmet para headers HTTP seguros
+- Rate limiting (100 req/15min global, 10 req/15min en auth)
+- Validación de inputs con express-validator
+- Variables de entorno para datos sensibles
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ Instalación local
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+\`\`\`bash
+# Clonar repositorio
+git clone https://github.com/angelmg777/Finanzas-App.git
+cd finanzas-app
+
+# Backend
+cd server
+npm install
+cp .env.example .env
+# Configura las variables de entorno
+npx prisma migrate dev
+npm run dev
+
+# Frontend
+cd ../client
+npm install
+npm run dev
+\`\`\`
