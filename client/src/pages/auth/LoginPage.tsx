@@ -29,7 +29,7 @@ export default function LoginPage() {
 
  const { mutate, isPending } = useMutation({
   mutationFn: ({ email, password }: LoginForm) => loginApi(email, password),
-  onSuccess: ({ user, token }) => { setAuth(user, token); navigate('/') },
+  onSuccess: ({ user, token }) => { setAuth(user, token); navigate('/app') },
   onError: (error) => {
     const err = getApiError(error)
     if (err.includes('verificar tu email')) {
