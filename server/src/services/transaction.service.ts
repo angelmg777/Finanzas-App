@@ -132,20 +132,32 @@ export const createTransaction = async (userId: string, input: CreateTransaction
       },
     })
 
-    if (type === 'INCOME') {
-      await updateBalance(tx, accountId, amount, 'add')
-    } else if (type === 'EXPENSE') {
-      if (account.type === 'CREDIT') {
-        // Gasto en crédito = aumenta deuda
-        await updateBalance(tx, accountId, amount, 'add')
-      } else {
-        // Gasto en débito/efectivo = resta saldo
+  if (type === 'INCOME') {
+        if (account.type === 'CREDIT') {
+          // Ingreso en crédito = pago de deuda = reduce balance
+          await updateBalance(tx, accountId, amount, 'subtract')
+        } else {
+          await updateBalance(tx, accountId, amount, 'add')
+        }
+  } else if (type === 'EXPENSE') {
+        if (account.type === 'CREDIT') {
+          // Gasto en crédito = aumenta deuda
+          await updateBalance(tx, accountId, amount, 'add')
+        } else {
+          await updateBalance(tx, accountId, amount, 'subtract')
+        }
+  } else if (type === 'TRANSFER') {
+        // Cuenta origen siempre pierde
         await updateBalance(tx, accountId, amount, 'subtract')
+
+        // Cuenta destino — si es crédito recibe un pago (reduce deuda)
+   const destAccount = await tx.account.findUnique({ where: { id: destinationAccountId! } })
+        if (destAccount?.type === 'CREDIT') {
+          await updateBalance(tx, destinationAccountId!, amount, 'subtract')
+        } else {
+          await updateBalance(tx, destinationAccountId!, amount, 'add')
+        }
       }
-    } else if (type === 'TRANSFER') {
-      await updateBalance(tx, accountId, amount, 'subtract')
-      await updateBalance(tx, destinationAccountId!, amount, 'add')
-    }
 
     return transaction
   })
@@ -159,20 +171,32 @@ export const deleteTransaction = async (id: string, userId: string) => {
 
   if (!transaction) throw new Error('Transacción no encontrada')
 
-  return prisma.$transaction(async (tx: PrismaTx) => {
-    if (transaction.type === 'INCOME') {
-      await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'subtract')
-    } else if (transaction.type === 'EXPENSE') {
-      if (transaction.account.type === 'CREDIT') {
-        await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'subtract')
-      } else {
-        await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'add')
-      }
-    } else if (transaction.type === 'TRANSFER' && transaction.destinationAccountId) {
+  return prisma.$transaction(async (tx) => {
+  if (transaction.type === 'INCOME') {
+    if (transaction.account.type === 'CREDIT') {
       await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'add')
+    } else {
+      await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'subtract')
+    }
+  } else if (transaction.type === 'EXPENSE') {
+    if (transaction.account.type === 'CREDIT') {
+      await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'subtract')
+    } else {
+      await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'add')
+    }
+  } else if (transaction.type === 'TRANSFER' && transaction.destinationAccountId) {
+    // Revierte origen
+    await updateBalance(tx, transaction.accountId, Number(transaction.amount), 'add')
+
+    // Revierte destino
+    const destAccount = await tx.account.findUnique({ where: { id: transaction.destinationAccountId } })
+    if (destAccount?.type === 'CREDIT') {
+      await updateBalance(tx, transaction.destinationAccountId, Number(transaction.amount), 'add')
+    } else {
       await updateBalance(tx, transaction.destinationAccountId, Number(transaction.amount), 'subtract')
     }
+  }
 
-    return tx.transaction.delete({ where: { id } })
-  })
+  return tx.transaction.delete({ where: { id: transaction.id } })
+})
 }
